@@ -1,42 +1,44 @@
 
-# 📘 Chapter 1 – Hello Transformers (Ayrıntılı Açıklama + Kod + Kaynak)
+# 📘 Chapter 1 – Hello Transformers (Genişletilmiş Açıklama + Kod + Kaynak)
 
-Bu bölüm, Transformer mimarisinin ortaya çıkışını, neden önemli olduğunu, önceki yöntemlere göre avantajlarını ve temel yapı taşlarını detaylı bir şekilde ele almaktadır. Aynı zamanda Hugging Face ekosistemi ile bu teknolojileri nasıl kolayca uygulayabileceğimizi gösterir.
+Bu bölümde, Transformer mimarisinin tarihsel gelişimi, neden devrimsel olduğu, öncüllerinden farkları, uygulama örnekleri ve Hugging Face ekosistemi ile nasıl kolayca çalışabileceğimiz detaylı olarak ele alınmıştır.
 
 ---
 
 ## 1. Transformer’ın Ortaya Çıkışı
 
-2017 yılında Google araştırmacıları tarafından yayımlanan “Attention Is All You Need” adlı makale, RNN (Recurrent Neural Network) tabanlı sıralı veri modellemeye karşı büyük bir alternatif sundu.
+2017 yılında Google tarafından yayımlanan “Attention Is All You Need” adlı makale, RNN ve LSTM tabanlı sıralı modellemelere alternatif olarak sadece attention mekanizmasına dayalı bir yapı sundu.
 
 ### ✔️ Neden önemli?
-- Eğitim süresi daha kısa
-- Paralelleştirilebilir
-- Uzun bağlamları daha iyi işler
+- Eğitim süresi daha kısa, daha ucuz GPU maliyeti
+- Zaman serilerine göre paralel işlem yapabilir
+- Uzun bağlamlarda bilgi kaybı daha az
 
 ### 🧠 Referanslar:
-- https://arxiv.org/abs/1706.03762
-- https://jalammar.github.io/illustrated-transformer/
-- https://sebastianruder.com/the-transformer-family/
+- [Makale](https://arxiv.org/abs/1706.03762)
+- [Görselli anlatım – Jay Alammar](https://jalammar.github.io/illustrated-transformer/)
+- [Transformer Ailesi – Ruder](https://sebastianruder.com/the-transformer-family/)
 
 ---
 
-## 2. ULMFiT ve Transfer Öğrenmenin Gücü
+## 2. ULMFiT ve Transfer Öğrenme
 
-ULMFiT, LSTM temelli bir model ile transfer öğrenmeyi NLP'ye taşıdı. Bu, Transformer gibi modellerin daha az veriyle çok şey öğrenebilmesinin yolunu açtı.
+ULMFiT, LSTM üzerine kurulu olmasına rağmen, geniş çaplı bir gözetimsiz eğitim sonrası, küçük etiketli veri setlerinde bile çok başarılı sonuçlar elde etmeyi sağlamıştır.
 
-### 🧠 Kaynak:
-- https://arxiv.org/abs/1801.06146
-- https://docs.fast.ai/text.learner.html
+### 🧠 Kaynaklar:
+- [Makale](https://arxiv.org/abs/1801.06146)
+- [FastAI Belgeleri](https://docs.fast.ai/text.learner.html)
+
+Bu yöntem, Transformer tabanlı modellerin önünü açtı çünkü aynı "önce büyük veriyle eğit, sonra uyum sağla" mantığı GPT ve BERT ile kullanılacaktır.
 
 ---
 
-## 3. GPT ve BERT'in Doğuşu
+## 3. GPT ve BERT’in Doğuşu
 
-- **GPT:** Sadece decoder katmanı ile çalışır. Language modeling görevine odaklanır.
-- **BERT:** Sadece encoder katmanı ile çalışır. Masked Language Modeling kullanır.
+- **GPT (Generative Pretrained Transformer):** Yalnızca decoder kısmı kullanılır. Dil modeli olarak eğitim alır.
+- **BERT (Bidirectional Encoder Representations from Transformers):** Yalnızca encoder kısmı kullanılır. Cümle içindeki rastgele maskelenmiş kelimeleri tahmin etmeye çalışır.
 
-### 🧪 Basit Örnek:
+### 🧪 GPT2 ile Metin Üretimi
 ```python
 from transformers import pipeline
 generator = pipeline("text-generation", model="gpt2")
@@ -47,28 +49,32 @@ print(generator("Transformers are", max_length=20))
 
 ## 4. Encoder-Decoder Yapısı
 
-Encoder girişi temsile çevirir, decoder bu temsilden çıktı üretir.
+Bu yapı, makine çevirisi gibi "girdi-seviyesi dizi → çıktı-seviyesi dizi" işlemleri için uygundur.
 
-### 🧠 Okuma:
-- https://machinelearningmastery.com/encoder-decoder-attention-sequence-to-sequence-prediction-keras/
-- https://colah.github.io/posts/2015-08-Understanding-LSTMs/
+- Encoder, tüm girdiyi sabit boyutlu bir vektöre kodlar.
+- Decoder, bu vektörden anlam çıkararak çıktı üretir.
+
+### 🧠 Kaynaklar:
+- [Sequence-to-Sequence Yapılar](https://machinelearningmastery.com/encoder-decoder-attention-sequence-to-sequence-prediction-keras/)
+- [Colah’s LSTM Anlatımı](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)
 
 ---
 
 ## 5. Attention Mekanizması
 
-Attention, decoder’ın her giriş token’ına farklı ağırlık vermesini sağlar. Bu sayede daha iyi çeviri ve özetleme yapılır.
+Attention, modelin farklı giriş öğelerine farklı dikkat vermesini sağlar. Bu, çeviri gibi eşleşme (alignment) gereken görevlerde büyük avantaj sağlar.
 
 ### 🧠 Kaynaklar:
-- https://arxiv.org/abs/1409.0473
-- https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/
+- [Bahdanau Attention](https://arxiv.org/abs/1409.0473)
+- [Jay Alammar Görselleştirme](https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/)
 
 ---
 
 ## 6. Transformer Mimarisi
 
-Transformer mimarisi, katmanlı self-attention ve feedforward yapılarından oluşur. Encoder ve decoder blokları ayrı ayrı attention katmanları içerir.
+Transformer, encoder ve decoder katmanlarının her birinde self-attention + feed-forward katmanlar bulundurur. Her katman kendi başına bir blok gibi çalışır.
 
+### 🔧 Kod:
 ```python
 from transformers import AutoTokenizer, AutoModel
 tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
@@ -79,7 +85,7 @@ model = AutoModel.from_pretrained("bert-base-uncased")
 
 ## 7. Hugging Face Transformers Kütüphanesi
 
-Bu kütüphane, model yükleme, ön işleme, eğitim ve ince ayar gibi işleri büyük ölçüde kolaylaştırır.
+Bu Python kütüphanesi, önceden eğitilmiş modellerle çalışma ve kendi verinizle model eğitme işlemlerini çok kolay hale getirir.
 
 ### 📦 Kurulum:
 ```bash
@@ -125,12 +131,12 @@ translator("Hello, how are you?")
 
 ## 9. Hugging Face Ekosistemi
 
-### 🚀 Ana Bileşenler:
-- **Transformers:** Modellerin kalbi
-- **Tokenizers:** Hızlı tokenizasyon
-- **Datasets:** Büyük veri kümeleri
-- **Accelerate:** Eğitim kolaylaştırıcı
-- **Hub:** Modellerin ve veri kümelerinin merkezi
+### 🚀 Bileşenler:
+- **Transformers:** Model eğitimi ve uygulaması
+- **Tokenizers:** Tokenize işlemi
+- **Datasets:** Geniş veri kümesi koleksiyonu
+- **Accelerate:** Multi-GPU ve kolay eğitim arayüzü
+- **Hub:** Hazır modellerin merkezi
 
 ### 🔗 Bağlantılar:
 - https://huggingface.co/models
@@ -141,16 +147,21 @@ translator("Hello, how are you?")
 
 ## 10. Transformer’ların Zorlukları
 
-- 🔁 Uzun dokümanlarda self-attention maliyetlidir
-- 🔍 Açıklanabilirlik problemi
-- ⚖️ Önyargı (bias) riski
-- 🌍 Düşük kaynaklı diller için model eksikliği
+- 🔁 Uzun dokümanlarda performans problemi (quadratic attention)
+- 🔍 Açıklanabilirlik hâlâ sınırlı
+- ⚖️ Modelin eğitildiği verilerdeki önyargılar (bias) modele yansıyabilir
+- 🌍 Düşük kaynaklı dillerde veri azlığı
 
 ---
 
 ## 🔚 Sonuç ve Sonraki Adımlar
 
-Transformer mimarisi, doğal dil işleme alanında ezber bozdu. Hugging Face ekosistemi sayesinde bu teknolojiler artık herkes için ulaşılabilir. Bu bölümde teoriden pratiğe geçen temel konuları işledik.
+Bu bölümde:
+- Transformer mimarisinin nasıl ortaya çıktığı
+- GPT ve BERT gibi modellerin nasıl bu yapıya dayandığı
+- Hugging Face ile pratikte nasıl kullanılacağı
+- Kod örnekleri ve kaynaklarla birlikte öğrenildi.
 
-> 🔜 Chapter 2’de metin sınıflandırmayı derinlemesine işleyeceğiz!
+> 🚀 Devam etmek için: Chapter 2 – Text Classification!
+
 
