@@ -1,41 +1,52 @@
 
-# 📚 Chapter 1 – Hello Transformers (Detaylı Açıklamalar ve Kodlarla)
+# 📚 Chapter 1 – Hello Transformers (Genişletilmiş Anlatım + Kaynak Linkleri)
 
 ## 1. Transformer’ın Doğuşu
-2017’de Google’ın yayımladığı “Attention Is All You Need” makalesiyle Transformer mimarisi tanıtıldı. Bu yapı RNN’lere göre çok daha hızlı ve paralel çalışabiliyor.
 
-**Avantajlar:**
-- Paralel hesaplama
-- Daha uzun bağlam bilgisi
-- Daha hızlı eğitim
+2017 yılında Google araştırmacıları tarafından yayımlanan “Attention Is All You Need” makalesiyle birlikte, RNN tabanlı sıralı modellemeler yerini paralel çalışan Transformer mimarisine bıraktı. Bu mimari, NLP'de devrim yarattı.
 
-![Transformer Timeline](https://jalammar.github.io/images/t/transformers-timeline.png)  
-*Transformer modellerinin gelişim süreci*
+### 🧠 Temel Kavramlar:
+- Paralel hesaplama yeteneği
+- Self-Attention mekanizması ile bağlamsal öğrenme
+- RNN'lerin sıralı bağımlılıklarının kaldırılması
+
+### 🔗 Kaynaklar:
+- [Original Paper – Attention Is All You Need (arXiv)](https://arxiv.org/abs/1706.03762)
+- [Jay Alammar – Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/)
+- [Sebastian Ruder – The Transformer Family](https://sebastianruder.com/the-transformer-family/)
 
 ---
 
 ## 2. GPT ve BERT’in Ortaya Çıkışı
 
-| Model | Mimarisi | Yönlülük | Eğitim Türü |
-|-------|----------|----------|--------------|
-| GPT   | Decoder | Tek yönlü | Language Modeling |
-| BERT  | Encoder | Çift yönlü | Masked Language Modeling |
+GPT ve BERT, Transformer mimarisinin iki farklı yönünü kullanarak NLP görevlerine odaklanır.
 
+| Model | Kullanılan Katman | Eğitim Türü | Yönlülük |
+|-------|-------------------|-------------|----------|
+| GPT   | Decoder           | Language Modeling | Tek yönlü |
+| BERT  | Encoder           | Masked Language Modeling | Çift yönlü |
+
+### 🧪 Örnek Kod (GPT):
 ```python
 from transformers import pipeline
 generator = pipeline("text-generation", model="gpt2")
 print(generator("Transformers are", max_length=20))
 ```
 
+### 🔗 Kaynaklar:
+- [BERT: Pre-training of Deep Bidirectional Transformers](https://arxiv.org/abs/1810.04805)
+- [OpenAI GPT Paper](https://openai.com/research/language-unsupervised)
+- [Blog: BERT vs GPT](https://towardsdatascience.com/bert-vs-gpt-comparing-their-strengths-634f5b40e49e)
+
 ---
 
 ## 3. Encoder-Decoder Framework
 
-Makine çevirisi gibi görevlerde kullanılır. Encoder giriş metnini sayısal forma çevirir, decoder çıktıyı üretir.
+Encoder-Decoder mimarisi, çeviri gibi giriş-çıkış çiftleri olan görevlerde yaygındır. Encoder tüm girişi temsil eden bir vektöre çevirir, decoder bu vektörü kullanarak çıktı üretir.
 
+### 🧪 Örnek Kod:
 ```python
 from transformers import MarianMTModel, MarianTokenizer
-
 model_name = "Helsinki-NLP/opus-mt-en-de"
 tokenizer = MarianTokenizer.from_pretrained(model_name)
 model = MarianMTModel.from_pretrained(model_name)
@@ -45,103 +56,138 @@ translated = model.generate(**inputs)
 print(tokenizer.decode(translated[0], skip_special_tokens=True))
 ```
 
-![Encoder Decoder](https://jalammar.github.io/images/seq2seq_2.png)
+### 🔗 Kaynaklar:
+- [Sequence to Sequence Models (Colah Blog)](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)
+- [Encoder-Decoder in Machine Translation](https://machinelearningmastery.com/encoder-decoder-attention-sequence-to-sequence-prediction-keras/)
 
 ---
 
 ## 4. Attention Mekanizması
 
-Attention, modelin her kelimeye farklı odaklanmasını sağlar.
+Attention, modelin her kelimeye farklı dikkat vermesini sağlar. Bu sayede bağlam bilgisini daha iyi yakalayabilir.
 
-![Attention](https://jalammar.github.io/images/transformer/transformer-self-attention.png)
-
-```python
-# Bu görseldeki yapı transformer mimarisinin temelidir
-```
+### 🔗 Kaynaklar:
+- [Bahdanau Attention Paper](https://arxiv.org/abs/1409.0473)
+- [The Illustrated Transformer (Jay Alammar)](https://jalammar.github.io/illustrated-transformer/)
+- [Blog: Visualizing Attention](https://distill.pub/2016/augmented-rnns/)
 
 ---
 
 ## 5. Transformer Mimarisi
 
-Transformer, self-attention + feed-forward ağlardan oluşur. Katman katman işlemler yapılır.
+Transformer, çok katmanlı attention ve feed-forward ağlardan oluşur. Eğitim süresi kısalır, paralelleştirme yapılabilir.
 
-![Transformer Architecture](https://jalammar.github.io/images/transformer/transformer.png)
+### 🔗 Kaynaklar:
+- [Google AI Blog on Transformer](https://ai.googleblog.com/2017/08/transformer-novel-neural-network.html)
+- [Blog: A Visual Guide to Transformers](https://e2eml.school/transformers.html)
 
 ---
 
 ## 6. Transfer Learning in NLP
 
-Büyük veri ile ön eğitim yapıldıktan sonra küçük görev verileriyle ince ayar yapılır (fine-tuning).
+Transfer öğrenme sayesinde büyük veriyle eğitilmiş modeller, yeni görevlerde çok daha az veriyle başarılı olur. ULMFiT ve BERT bu stratejiyle eğitildi.
 
+### 🧪 Hugging Face Fine-tuning:
 ```python
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
-
 model = AutoModelForSequenceClassification.from_pretrained("distilbert-base-uncased")
 tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 ```
+
+### 🔗 Kaynaklar:
+- [ULMFiT Paper](https://arxiv.org/abs/1801.06146)
+- [Transfer Learning with Transformers](https://ruder.io/nlp-imagenet/)
+- [Fast.ai ULMFiT Explanation](https://docs.fast.ai/text.learner.html)
 
 ---
 
 ## 7. Hugging Face Transformers Kütüphanesi
 
+Hugging Face, model ve tokenizer yükleme, pipeline oluşturma gibi işleri kolaylaştırır.
+
+### 🧪 Örnek:
 ```python
 from transformers import pipeline
 classifier = pipeline("text-classification")
 print(classifier("Transformers are amazing!"))
 ```
 
+### 🔗 Kaynaklar:
+- [Transformers GitHub](https://github.com/huggingface/transformers)
+- [Hugging Face Documentation](https://huggingface.co/docs/transformers/index)
+
 ---
 
 ## 8. Uygulama Örnekleri
 
-### 🧠 Sentiment Analysis
+### a. Sentiment Analysis
 ```python
-classifier("I hate waiting for packages.")
+pipeline("text-classification")("I love AI!")
 ```
 
-### 🔍 Named Entity Recognition
+### b. Named Entity Recognition
 ```python
-ner = pipeline("ner", aggregation_strategy="simple")
-ner("Elon Musk founded SpaceX in California.")
+pipeline("ner", aggregation_strategy="simple")("Barack Obama was born in Hawaii.")
 ```
 
-### ❓ Question Answering
+### c. Question Answering
 ```python
-qa = pipeline("question-answering")
-qa(question="Who founded Apple?", context="Apple was founded by Steve Jobs and Steve Wozniak.")
+pipeline("question-answering")(
+  question="Who founded Apple?", 
+  context="Apple was founded by Steve Jobs and Steve Wozniak."
+)
 ```
 
-### ✂️ Summarization
+### d. Summarization
 ```python
-summarizer = pipeline("summarization")
-summarizer("Transformers are powerful NLP models. They outperform RNNs in many tasks.")
+pipeline("summarization")("Transformers allow parallel computation and are powerful.")
 ```
+
+### e. Translation
+```python
+pipeline("translation_en_to_de", model="Helsinki-NLP/opus-mt-en-de")("Hello, how are you?")
+```
+
+### f. Text Generation
+```python
+pipeline("text-generation", model="gpt2")("Once upon a time")
+```
+
+### 🔗 Örnek Projeler:
+- [Text Classification Example](https://github.com/huggingface/transformers/tree/main/examples/pytorch/text-classification)
+- [NER Example](https://github.com/huggingface/transformers/tree/main/examples/pytorch/token-classification)
+- [Summarization Example](https://github.com/huggingface/transformers/tree/main/examples/pytorch/summarization)
+- [Translation Example](https://github.com/huggingface/transformers/tree/main/examples/pytorch/translation)
 
 ---
 
 ## 9. Hugging Face Ekosistemi
 
-- 🤖 **Transformers**: modeller
-- ✂️ **Tokenizers**: hızlı parçalama
-- 🧺 **Datasets**: veri setleri
-- 🚀 **Accelerate**: eğitim hızlandırma
-- ☁️ **Hub**: model havuzu
+- 🤖 Transformers: Modeller
+- ✂️ Tokenizers: Metin parçalama
+- 📚 Datasets: Veri kümesi
+- ⚡ Accelerate: Eğitim hızlandırma
+- ☁️ Hub: Model paylaşım platformu
+
+🔗 [Hugging Face Hub](https://huggingface.co/models)
 
 ---
 
 ## 10. Zorluklar
 
-- İngilizce dışı dillerde veri sıkıntısı
-- Uzun dokümanlarda performans kaybı
-- Model iç yapısının açıklanamaması
-- Önyargı (bias) taşıma riski
+- Dil çeşitliliği problemi (İngilizce dışı modeller az)
+- Uzun metinlerde self-attention maliyeti yüksek
+- Model kararları açıklanamıyor (black-box)
+- İnternetten alınan verilerden gelen önyargı (bias)
 
 ---
 
 ## 11. Bölüm Özeti
 
-Transformer mimarisi NLP’de devrim yaratmıştır. GPT ve BERT ile başlayan bu çağ, Hugging Face sayesinde pratik olarak erişilebilir hale gelmiştir.
+Bu bölümde:
+- Transformer mimarisi, encoder-decoder yapısı, attention, GPT ve BERT gibi modellerin doğuşu
+- Hugging Face ile model kullanımı ve NLP görevleri
+- Kod örnekleri ve uygulamalar
+gibi temel yapı taşları öğrenildi.
 
----
-
-📌 *Not: Görseller [Jay Alammar](https://jalammar.github.io/illustrated-transformer/) tarafından hazırlanmıştır.*
+🧭 Sonraki adım: Kendi veri kümenle model eğitmek ve optimize etmek.
